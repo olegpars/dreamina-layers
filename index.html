@@ -1,0 +1,158 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dreamina: четыре картинки, разобранные на слои</title><link rel="icon" href="data:,"><meta name="robots" content="noindex"><meta name="description" content="Раздвиньте дом на слои, переставьте тарелки, посмотрите на монстра, который ожил отдельно от фона."><meta property="og:type" content="website"><meta property="og:url" content="https://olegpars.github.io/dreamina-layers/"><meta property="og:title" content="Dreamina: четыре картинки, разобранные на слои"><meta property="og:description" content="Раздвиньте дом на слои, переставьте тарелки, посмотрите на монстра, который ожил отдельно от фона."><meta property="og:image" content="https://olegpars.github.io/dreamina-layers/og.jpg"><meta name="twitter:card" content="summary_large_image">
+<style>
+@font-face{font-family:"Sofia Sans";src:url(fonts/f0.ttf);font-weight:400;font-display:swap}
+@font-face{font-family:"Sofia Sans";src:url(fonts/f1.ttf);font-weight:600;font-display:swap}
+@font-face{font-family:"Sofia Sans Condensed";src:url(fonts/f3.ttf);font-weight:800;font-display:swap}
+:root{--bg:oklch(.19 .018 150);--pl:oklch(.25 .02 150);--ln:oklch(.40 .02 150);--tx:oklch(.94 .012 95);--mu:oklch(.78 .018 120);--ac:oklch(.80 .135 72);
+--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:40px;--s7:64px;
+--f1:16px;--f2:18px;--f4:clamp(34px,3.2vw,46px);--f5:clamp(46px,5vw,72px);--r:6px;--lift:0 6px 5px oklch(.2 .05 30/.55);--t1:oklch(.86 .15 100);--t2:oklch(.98 .004 100);--t3:oklch(.6 .2 28)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:400 var(--f2)/1.45 "Sofia Sans",sans-serif;overflow-x:hidden}
+h1,h2{font-family:"Sofia Sans Condensed",sans-serif;font-weight:800;line-height:1.04;margin:0;text-wrap:balance}
+h1{font-size:var(--f5)}h2{font-size:var(--f4)}p{margin:0;max-width:56ch;text-wrap:pretty}.mu{color:var(--mu)}
+section{padding:var(--s7) clamp(16px,4vw,64px);display:grid;gap:var(--s6);grid-template-columns:minmax(260px,360px) minmax(0,1fr);align-items:center;max-width:1560px;margin:0 auto}
+section.flip{grid-template-columns:minmax(0,1fr) minmax(260px,360px)}section.flip .side{order:2}
+.side{display:grid;gap:var(--s5);align-content:center}
+.hero{min-height:100svh;padding-block:var(--s5)}
+.scene{position:relative;overflow:hidden;border-radius:var(--r);background:var(--pl);touch-action:pan-y;user-select:none;width:100%;margin-inline:auto}
+.r32{aspect-ratio:3/2}.r169{aspect-ratio:1376/768}
+.stage{position:absolute;inset:0}.l{position:absolute;height:auto;display:block}
+button,input{font:inherit;color:inherit}
+.btn,.chip{background:var(--pl);border:1px solid var(--ln);border-radius:var(--r);padding:var(--s2) var(--s3);min-height:44px;cursor:pointer}
+.chip{font-size:var(--f1);padding:var(--s1) var(--s3)}.chip[aria-pressed=false]{color:var(--mu);text-decoration:line-through}
+.btn[aria-pressed=true]{background:var(--ac);border-color:var(--ac);color:var(--bg);font-weight:600}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:var(--s2)}
+label{display:grid;gap:var(--s2);font-weight:600}input[type=range]{width:100%;accent-color:var(--ac);min-height:32px}
+#house{overflow:visible;background:none;perspective:1700px;--step:58px;--px:-16px}
+#house .stage{transform-style:preserve-3d;transform:rotateX(calc(var(--t,0)*9deg)) rotateY(calc(var(--t,0)*-38deg)) scale(calc(1 - var(--t,0)*.2))}
+#house .l,.smoke{transform:translate3d(calc(var(--mx,0)*var(--d)*var(--px)),calc(var(--my,0)*var(--d)*var(--px)*.5),calc((var(--i) - 4.5)*var(--t,0)*var(--step)))}
+#house .l[data-i="0"]{border-radius:var(--r)}
+#house .glass{position:absolute;inset:0;border:1px solid var(--mu);border-radius:var(--r);pointer-events:none;opacity:calc(var(--t,0)*.45);transform:translateZ(calc((var(--i) - 4.5)*var(--t,0)*var(--step)))}
+#house .l.hot{outline:3px solid var(--ac);outline-offset:3px}
+#house .l.off{visibility:hidden}
+#house .l[data-i="3"]{animation:rock 3.4s ease-in-out infinite;transform-origin:50% 96%}
+@keyframes rock{0%,100%{rotate:-4deg}50%{rotate:5deg}}
+#house .l[data-i="5"]{animation:lamp 4.2s steps(1) infinite}
+@keyframes lamp{0%,41%,44%,47%,100%{opacity:1}42%,45.5%{opacity:.72}}
+.smoke{position:absolute;left:41.6%;top:3.2%;width:5.6%;height:10%;pointer-events:none;--i:2;--d:.35}
+.smoke i{position:absolute;left:0;right:0;bottom:0;height:55%;background:url(a/house-smoke.webp) center bottom/100% 100% no-repeat;animation:puff 5s linear infinite;opacity:0}
+.smoke i:nth-child(2){animation-delay:-1.66s}.smoke i:nth-child(3){animation-delay:-3.33s}
+@keyframes puff{0%{transform:translateY(8%) scale(.85);opacity:0}22%{opacity:.6}100%{transform:translate(26%,-135%) scale(1.9) rotate(14deg);opacity:0}}
+#comic .stage{inset:-1.2%}#comic .l,#comic video,#comic canvas{transform:translate3d(calc(var(--mx,0)*var(--d)*-20px),calc(var(--my,0)*var(--d)*-12px),0)}
+#comic video,#comic canvas{position:absolute;display:none;pointer-events:none;aspect-ratio:16/9}#comic canvas{background:var(--p) center/100% 100% no-repeat}#comic canvas.on{background:none}
+#comic[data-m="2"] video,#comic[data-m="2"] canvas{display:block}#comic[data-m="2"] .l[data-i="1"],#comic[data-m="2"] .l[data-i="2"]{display:none}
+#comic .src{position:absolute;inset:0;width:100%;height:100%;display:none}#comic[data-m="0"] .src{display:block}#comic[data-m="0"] .stage{display:none}
+#comic[data-m="2"] .l[data-i="3"]{animation:boil .5s steps(1) infinite}
+@keyframes boil{0%{rotate:0deg;translate:0 0}33%{rotate:.5deg;translate:2px -1px}66%{rotate:-.5deg;translate:-1px 2px}}
+#comic[data-m="2"] .l[data-i="4"]{animation:drift 7s ease-in-out infinite}
+@keyframes drift{0%,100%{translate:0 0;rotate:0deg}50%{translate:-1.6% 1.8%;rotate:-1.2deg}}
+#comic[data-m="2"] .l[data-i="3"]{z-index:3}#comic[data-m="2"] .l[data-i="4"]{z-index:4}
+#table .l{pointer-events:none}#table .drag{pointer-events:auto;cursor:grab;touch-action:none;transform:translate(var(--x,0px),var(--y,0px))}
+#table .drag.shade{filter:drop-shadow(var(--lift))}#table .drag:active{cursor:grabbing}
+#frog{background:var(--t1)}#frog .l{left:13%!important;width:74%!important;top:auto!important;bottom:0;transform:scale(var(--z,1));transform-origin:12% 8%}
+.sw{width:44px;height:44px;border-radius:var(--r);border:2px solid var(--ln);cursor:pointer;padding:0}.sw[aria-pressed=true]{outline:2px solid var(--ac);outline-offset:1px}
+footer{padding:var(--s6) clamp(16px,4vw,64px) var(--s7);max-width:1560px;margin:0 auto}
+@media (max-width:900px){section,section.flip{grid-template-columns:minmax(0,1fr);padding-block:var(--s6)}section.flip .side{order:0}.hero{min-height:0}#chips{display:none}#house{--step:20px;--px:-6px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<section class="hero"><div class="side">
+<h1>Одна картинка, десять слоёв</h1>
+<p>Dreamina разобрала плоский кадр на фон и девять предметов. Лес и тропу под домом модель дорисовала сама. Ведите мышью или пальцем: слои едут с разной скоростью.</p>
+<label>Раздвинуть слои<input id="ex" type="range" min="0" max="100" value="0"></label>
+<div class="row"><button class="btn" id="play">Разобрать</button><button class="btn" id="osrc" aria-pressed="false">Исходник</button></div>
+<div class="row" id="chips" role="group" aria-label="Показать или скрыть слой"><button class="chip" data-l="0" aria-pressed="true">Лес</button><button class="chip" data-l="1" aria-pressed="true">Дом</button><button class="chip" data-l="2" aria-pressed="true">Труба с дымом</button><button class="chip" data-l="3" aria-pressed="true">Кресло-качалка</button><button class="chip" data-l="4" aria-pressed="true">Горшок</button><button class="chip" data-l="5" aria-pressed="true">Лампа</button><button class="chip" data-l="6" aria-pressed="true">Ступени</button><button class="chip" data-l="7" aria-pressed="true">Валун слева</button><button class="chip" data-l="8" aria-pressed="true">Валун справа</button><button class="chip" data-l="9" aria-pressed="true">Папоротник</button></div>
+</div><div><div class="scene r32" id="house"><div class="stage"><img class="l" data-i="0" src="a/house-00.webp" width="1536" height="1024" alt="Лес" style="left:0.000%;top:0.000%;width:100.000%;--i:0;--d:0" draggable="false">
+<div class="glass" style="--i:1"></div>
+<img class="l" data-i="1" src="a/house-01.webp" width="975" height="589" alt="Дом" style="left:28.581%;top:10.059%;width:63.477%;--i:1;--d:0.35" draggable="false">
+<div class="glass" style="--i:2"></div>
+<img class="l" data-i="2" src="a/house-02.webp" width="132" height="354" alt="Труба с дымом" style="left:38.802%;top:7.812%;width:8.594%;--i:2;--d:0.35" draggable="false">
+<div class="glass" style="--i:3"></div>
+<img class="l" data-i="3" src="a/house-03.webp" width="83" height="92" alt="Кресло-качалка" style="left:69.141%;top:55.859%;width:5.404%;--i:3;--d:0.36" draggable="false">
+<div class="glass" style="--i:4"></div>
+<img class="l" data-i="4" src="a/house-04.webp" width="90" height="82" alt="Горшок" style="left:54.818%;top:56.543%;width:5.859%;--i:4;--d:0.36" draggable="false">
+<div class="glass" style="--i:5"></div>
+<img class="l" data-i="5" src="a/house-05.webp" width="70" height="78" alt="Лампа" style="left:63.802%;top:46.582%;width:4.557%;--i:5;--d:0.35" draggable="false">
+<div class="glass" style="--i:6"></div>
+<img class="l" data-i="6" src="a/house-06.webp" width="214" height="74" alt="Ступени" style="left:58.529%;top:64.941%;width:13.932%;--i:6;--d:0.37" draggable="false">
+<div class="glass" style="--i:7"></div>
+<img class="l" data-i="7" src="a/house-07.webp" width="257" height="112" alt="Валун слева" style="left:41.406%;top:69.336%;width:16.732%;--i:7;--d:0.7" draggable="false">
+<div class="glass" style="--i:8"></div>
+<img class="l" data-i="8" src="a/house-08.webp" width="369" height="204" alt="Валун справа" style="left:71.029%;top:75.684%;width:24.023%;--i:8;--d:1" draggable="false">
+<div class="glass" style="--i:9"></div>
+<img class="l" data-i="9" src="a/house-09.webp" width="174" height="97" alt="Папоротник" style="left:42.383%;top:75.391%;width:11.328%;--i:9;--d:0.8" draggable="false"><div class="smoke"><i></i><i></i><i></i></div><img class="l" id="hsrc" src="a/house-src.webp" alt="Исходная картинка" width="1536" height="1024" style="left:0;top:0;width:100%;display:none;--i:4.5;--d:0"></div></div></div></section>
+
+<section class="flip"><div class="side"><h2>Комикс: ведьма и монстр ожили отдельно</h2>
+<p>Слои заказаны словами: ведьма, монстр, карандашный монстр, лепестки. Монстр и ведьма сняты отдельно в Seedance на цветном фоне и вернулись с прозрачностью.</p>
+<div class="row" id="cm"><button class="btn" data-m="0" aria-pressed="false">Исходник</button><button class="btn" data-m="1" aria-pressed="false">Слои</button><button class="btn" data-m="2" aria-pressed="true">Слои и ролики</button></div>
+<p class="mu">Потери раскладки: пропали прутья метлы, вторая кисть и розовая заливка карандашного монстра. Потери ролика: Seedance сменил ведьме шапку и ворот, сумка на спине меняет форму.</p></div>
+<div><div class="scene r169" id="comic" data-m="2"><div class="stage"><img class="l" data-i="0" src="a/comic-00.webp" width="1376" height="768" alt="Лес" style="left:0.000%;top:0.000%;width:100.000%;--i:0;--d:0" draggable="false">
+<img class="l" data-i="1" src="a/comic-01.webp" width="376" height="259" alt="Ведьма" style="left:5.814%;top:7.682%;width:27.326%;--i:1;--d:0.45" draggable="false">
+<img class="l" data-i="2" src="a/comic-02.webp" width="980" height="757" alt="Монстр" style="left:27.616%;top:0.000%;width:71.221%;--i:2;--d:0.3" draggable="false">
+<img class="l" data-i="3" src="a/comic-03.webp" width="589" height="336" alt="Карандашный монстр" style="left:2.471%;top:49.479%;width:42.805%;--i:3;--d:1" draggable="false">
+<img class="l" data-i="4" src="a/comic-04.webp" width="939" height="722" alt="Лепестки" style="left:30.523%;top:1.562%;width:68.241%;--i:4;--d:0.7" draggable="false">
+<video data-v="w" data-n="witch" poster="a/witch-poster.webp" preload="none" muted loop autoplay playsinline style="left:-10.153%;top:-4.790%;width:58.392%;--d:.45"></video>
+<video data-v="m" data-n="monster" poster="a/monster-poster.webp" preload="none" muted loop autoplay playsinline style="left:.388%;top:0;width:99.225%;--d:.3"></video>
+</div><img class="src" src="a/comic-src.webp" alt="Исходный кадр комикса" width="1376" height="768"></div></div></section>
+
+<section><div class="side"><h2>Стол: переставьте тарелки</h2>
+<p id="thint">Пятнадцать слоёв. Столешница под посудой целая, поэтому тарелки можно таскать. На клавиатуре: Tab и стрелки.</p>
+<div class="row"><button class="btn" id="tsh" aria-pressed="true">Тень из CSS</button><button class="btn" id="tch" aria-pressed="false">Убрать столешницу</button><button class="btn" id="trs">Вернуть на места</button></div>
+<p class="mu">Потери: тени посуды исчезли. Стулья под столом не дорисованы, это видно без столешницы.</p></div>
+<div><div class="scene r32" id="table"><div class="stage"><img class="l" data-i="0" src="a/table-00.webp" width="1536" height="1024" alt="Пол" style="left:0.000%;top:0.000%;width:100.000%;--i:0;--d:0" draggable="false">
+<img class="l" data-i="1" src="a/table-01.webp" width="222" height="109" alt="Стул сверху" style="left:42.708%;top:0.391%;width:14.453%;--i:1;--d:0" draggable="false">
+<img class="l" data-i="2" src="a/table-02.webp" width="214" height="242" alt="Стул сверху слева" style="left:15.560%;top:14.746%;width:13.932%;--i:2;--d:0" draggable="false">
+<img class="l" data-i="3" src="a/table-03.webp" width="212" height="242" alt="Стул сверху справа" style="left:70.052%;top:14.844%;width:13.802%;--i:3;--d:0" draggable="false">
+<img class="l" data-i="4" src="a/table-04.webp" width="213" height="236" alt="Стул снизу слева" style="left:15.625%;top:61.035%;width:13.867%;--i:4;--d:0" draggable="false">
+<img class="l" data-i="5" src="a/table-05.webp" width="219" height="236" alt="Стул снизу справа" style="left:69.531%;top:60.840%;width:14.258%;--i:5;--d:0" draggable="false">
+<img class="l" data-i="6" src="a/table-06.webp" width="220" height="145" alt="Стул снизу" style="left:42.708%;top:85.352%;width:14.323%;--i:6;--d:0" draggable="false">
+<img class="l" data-i="7" src="a/table-07.webp" width="847" height="816" alt="Столешница" style="left:22.135%;top:9.766%;width:55.143%;--i:7;--d:0" draggable="false">
+<img class="l" data-i="8" src="a/table-08.webp" width="188" height="183" alt="Суп" style="left:43.815%;top:13.574%;width:12.240%;--i:8;--d:0" draggable="false">
+<img class="l" data-i="9" src="a/table-09.webp" width="185" height="186" alt="Яичница" style="left:27.930%;top:26.367%;width:12.044%;--i:9;--d:0" draggable="false">
+<img class="l" data-i="10" src="a/table-10.webp" width="185" height="186" alt="Рис" style="left:59.766%;top:26.465%;width:12.044%;--i:10;--d:0" draggable="false">
+<img class="l" data-i="11" src="a/table-11.webp" width="185" height="186" alt="Виноград" style="left:27.865%;top:53.320%;width:12.044%;--i:11;--d:0" draggable="false">
+<img class="l" data-i="12" src="a/table-12.webp" width="187" height="186" alt="Салат" style="left:59.701%;top:53.418%;width:12.174%;--i:12;--d:0" draggable="false">
+<img class="l" data-i="13" src="a/table-13.webp" width="188" height="186" alt="Тыква" style="left:43.685%;top:66.406%;width:12.240%;--i:13;--d:0" draggable="false">
+<img class="l" data-i="14" src="a/table-14.webp" width="222" height="215" alt="Ваза" style="left:42.318%;top:37.109%;width:14.453%;--i:14;--d:0" draggable="false"></div></div></div></section>
+
+<section class="flip"><div class="side"><h2>Жаба: проверка края</h2>
+<p>На части модель жабу не поделила, вышли голова и фон. Зато край мягкий: размытые цветы остались полупрозрачными.</p>
+<div class="row" id="sw" role="group" aria-label="Фон под жабой"></div><div class="row"><button class="btn" id="zm" aria-pressed="false">Увеличить край</button></div>
+<p class="mu">На ярком фоне у размытых цветов заметен слабый тёмный ореол от старого фона.</p></div>
+<div><div class="scene r32" id="frog"><div class="stage"><img class="l" data-i="1" src="a/frog-01.webp" width="1040" height="896" alt="Жаба" style="left:5.152%;top:0.000%;width:87.838%;--i:1;--d:0" draggable="false"></div></div></div></section>
+
+<footer class="mu"><p>Тест 24 ноября 2026. Раскладка: 199 кредитов за картинку. Ролик слоя: 275 кредитов за 5 секунд Seedance 2.0, 720p. Параллакс, качалка, дым, тени и перетаскивание сделаны кодом.</p></footer>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],mq=matchMedia('(prefers-reduced-motion:reduce)');let calm=mq.matches;mq.onchange=()=>{calm=mq.matches;$$('video').forEach(v=>calm?v.pause():v.play())};
+for(const id of['house','comic']){const e=$('#'+id);e.addEventListener('pointermove',v=>{if(calm)return;const r=e.getBoundingClientRect();e.style.setProperty('--mx',((v.clientX-r.left)/r.width*2-1).toFixed(3));e.style.setProperty('--my',((v.clientY-r.top)/r.height*2-1).toFixed(3))});e.addEventListener('pointerleave',()=>{e.style.setProperty('--mx',0);e.style.setProperty('--my',0)})}
+const H=$('#house'),ex=$('#ex'),play=$('#play');
+function setT(v){H.style.setProperty('--t',v/100);ex.value=v;play.textContent=v>50?'Собрать':'Разобрать'}
+function src(on){$('#osrc').setAttribute('aria-pressed',on);$('#hsrc').style.display=on?'block':'none';if(on)setT(0)}
+ex.oninput=()=>{src(false);setT(+ex.value)};
+play.onclick=()=>{src(false);const a=+ex.value,b=a>50?0:100,t0=performance.now(),d=calm?1:900;(function f(t){const k=Math.min(1,Math.max(0,(t-t0)/d)),e=1-Math.pow(1-k,3);setT(Math.round(a+(b-a)*e));if(k<1)requestAnimationFrame(f)})(t0)};
+$('#osrc').onclick=e=>src(e.currentTarget.getAttribute('aria-pressed')!=='true');
+$$('#chips .chip').forEach(c=>{const l=$('#house .l[data-i="'+c.dataset.l+'"]');c.onclick=()=>{const on=c.getAttribute('aria-pressed')!=='true';c.setAttribute('aria-pressed',on);l.classList.toggle('off',!on);if(c.dataset.l=='2')$('.smoke').style.display=on?'':'none'};c.onpointerenter=c.onfocus=()=>l.classList.add('hot');c.onpointerleave=c.onblur=()=>l.classList.remove('hot')});
+$$('#cm .btn').forEach(b=>b.onclick=()=>{$('#comic').dataset.m=b.dataset.m;$$('#cm .btn').forEach(x=>x.setAttribute('aria-pressed',x===b));if(b.dataset.m=='2'&&!calm)$$('#comic video').forEach(v=>v.play())});
+if(calm)$$('video').forEach(v=>{v.autoplay=false;v.pause()});
+
+/* Safari не умеет прозрачный WebM: там ролик идёт парой «цвет над маской» и собирается в canvas */
+const ua=navigator.userAgent,apple=/iP(hone|ad|od)/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)||(/Safari/.test(ua)&&!/Chrom|Android|Edg/.test(ua))||location.search==='?gl';
+function glVideo(v){const c=document.createElement('canvas');c.width=1280;c.height=720;c.style.cssText=v.style.cssText;c.style.setProperty('--p',"url('a/"+v.dataset.n+"-poster.webp')");v.before(c);v.removeAttribute('poster');v.style.cssText='left:0;top:0;width:2px;height:2px;opacity:.01;transform:none';v.src='a/'+v.dataset.n+'.mp4';
+const g=c.getContext('webgl',{premultipliedAlpha:true});if(!g)return;const sh=(t,s)=>{const o=g.createShader(t);g.shaderSource(o,s);g.compileShader(o);return o},p=g.createProgram();
+g.attachShader(p,sh(g.VERTEX_SHADER,'attribute vec2 q;varying vec2 u;void main(){u=vec2(q.x*.5+.5,.5-q.y*.5);gl_Position=vec4(q,0.,1.);}'));
+g.attachShader(p,sh(g.FRAGMENT_SHADER,'precision mediump float;uniform sampler2D t;varying vec2 u;void main(){vec2 k=clamp(u,.002,.998);float a=clamp((texture2D(t,vec2(k.x,k.y*.5+.5)).r-.02)/.96,0.,1.);vec3 c=texture2D(t,vec2(k.x,k.y*.5)).rgb;gl_FragColor=vec4(min(c,vec3(a)),a);}'));
+g.linkProgram(p);g.useProgram(p);g.bindBuffer(g.ARRAY_BUFFER,g.createBuffer());g.bufferData(g.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),g.STATIC_DRAW);g.enableVertexAttribArray(0);g.bindAttribLocation(p,0,'q');const q=g.getAttribLocation(p,'q');g.enableVertexAttribArray(q);g.vertexAttribPointer(q,2,g.FLOAT,false,0,0);
+g.bindTexture(g.TEXTURE_2D,g.createTexture());for(const[k,x]of[[g.TEXTURE_MIN_FILTER,g.LINEAR],[g.TEXTURE_MAG_FILTER,g.LINEAR],[g.TEXTURE_WRAP_S,g.CLAMP_TO_EDGE],[g.TEXTURE_WRAP_T,g.CLAMP_TO_EDGE]])g.texParameteri(g.TEXTURE_2D,k,x);
+let last=-1;(function f(){if(v.readyState>1&&v.currentTime!==last&&$('#comic').dataset.m==='2'){last=v.currentTime;g.texImage2D(g.TEXTURE_2D,0,g.RGB,g.RGB,g.UNSIGNED_BYTE,v);g.drawArrays(g.TRIANGLE_STRIP,0,4);c.classList.add('on')}requestAnimationFrame(f)})()}
+new IntersectionObserver((es,o)=>{if(!es.some(e=>e.isIntersecting))return;o.disconnect();$$('#comic video').forEach(v=>{apple?glVideo(v):v.src='a/'+v.dataset.n+'.webm';if(!calm)v.play().catch(()=>{})})},{rootMargin:'600px'}).observe($('#comic'));
+let zTop=20;const items=$$('#table .l').filter(l=>+l.dataset.i>=8);
+items.forEach(l=>{l.classList.add('drag','shade');l.tabIndex=0;l.setAttribute('role','button');l.setAttribute('aria-roledescription','предмет, двигается стрелками');l.setAttribute('aria-describedby','thint');l._x=l._y=0;l._put=()=>{l.style.setProperty('--x',l._x+'px');l.style.setProperty('--y',l._y+'px')};
+l.onpointerdown=e=>{e.preventDefault();l.focus({preventScroll:true});l.setPointerCapture(e.pointerId);l.style.zIndex=++zTop;l._s=[e.clientX-l._x,e.clientY-l._y]};
+l.onpointermove=e=>{if(!l._s)return;l._x=e.clientX-l._s[0];l._y=e.clientY-l._s[1];l._put()};l.onpointerup=l.onpointercancel=()=>l._s=null;
+l.onkeydown=e=>{const k={ArrowLeft:[-12,0],ArrowRight:[12,0],ArrowUp:[0,-12],ArrowDown:[0,12]}[e.key];if(k){e.preventDefault();l._x+=k[0];l._y+=k[1];l._put()}}});
+$('#trs').onclick=()=>items.forEach(l=>{l._x=l._y=0;l.style.zIndex='';l._put()});
+const tog=(b,f)=>b.onclick=()=>{const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);f(on)};
+tog($('#tsh'),on=>items.forEach(l=>l.classList.toggle('shade',on)));
+tog($('#tch'),on=>$('#table .l[data-i="7"]').style.visibility=on?'hidden':'');
+tog($('#zm'),on=>$('#frog').style.setProperty('--z',on?3:1));
+[['Жёлтый','var(--t1)'],['Белый','var(--t2)'],['Красный','var(--t3)'],['Исходный фон','url(a/frog-00.webp)'],['Лес от дома','url(a/house-00.webp)'],['Лес из комикса','url(a/comic-00.webp)']].forEach(([n,c],i)=>{const v=c.startsWith('url')?c+' center/cover':c,b=document.createElement('button');b.className='sw';b.setAttribute('aria-label',n);b.title=n;b.setAttribute('aria-pressed',i==0);b.style.background=v;b.onclick=()=>{$('#frog').style.background=v;$$('.sw').forEach(x=>x.setAttribute('aria-pressed',x===b))};$('#sw').append(b)});
+</script></body></html>
